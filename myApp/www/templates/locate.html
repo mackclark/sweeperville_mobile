@@ -1,48 +1,18 @@
-<h1>DON'T GET TOWED!
-            <span ng-if="comparing == true"> | 
-                <span ng-if="moveToday == true">Move your car Today!</span>
-                <span ng-if="moveTomorrow == true">Move your car Tomorrow!</span>
-                <span ng-if="moveToday == false && moveTomorrow == false">You're good to go!</span>
-                <p>{{explanation}}</p>
-            </span>
-        </h1>
-        <div  class="row">
-            <div  class="columns large-6">
-                <h3>Today is the:</h3> 
-
-                <p>{{TodaysDate}}</p>
-                <div ng-if="selectedSpot">
-                    <h3> You parked at: </h3>
-                    <p>{{selectedSpot.property1}} {{selectedSpot.property2}}, {{selectedSpot.property3}} side</p>
-                    <h3>That street is swept on: </h3>
-                    <p>{{selectedSpot.property4}}</p>
-                </div>
-                <button ng-click="compareDate(dateObject)">find me!</button>
-                <div ng-if="!selectedSpot">
-                    <h3> You parked at: </h3>
-                    <p>{{address.street}}, {{address.side}} side</p>
-                    <h3>That street is swept on: </h3>
-                    
-                    <p>{{locationSweepDate.sweepDate}}</p>
-                    
-                
-                    <h3>Here you are</h3>
-                    <div id="map-canvas"></div>
-                    <div class="address">{{address.street}}, {{address.side}}</div>
-
-                </div>
-            </div>
-            <div class="columns large-6">
-                    <div>Would you rather choose from a list?</div>
-                    <button ng-click="showList();"><span ng-if="!chooseStreet">yes</span><span ng-if="chooseStreet">no</span></button>
-                    <div ng-if="chooseStreet">Where did you park?
-                        <input type="textbox" ng-model="parkingSpot.concatName">
-                        <div class="row" ng-repeat="street in schedule | filter: parkingSpot">
-                            <input class="columns large-2" name "chooseStreet" ng-click="enterParkingSpot(); compareDate(dateObject)" type="radio" value="{{street}}">
-                            <label class="columns large-10" for "chooseStreet" >{{street.concatName}}, {{street.property3}}:<p> {{street.sweepDate.sweepDate}}</p></label>
-                        </div>
-                    <button ng-click="loadFewer();">Back</button>
-                    <button ng-click="loadMore();">Next</button>
-                    </div>
-            </div>
-        </div>
+**************LOCATE
+<ion-view title="Your Parking Spot">
+    <ion-content>
+        <ion-item>
+            <div id="map-canvas" style="height: 300px"></div>
+             <a href="#/list">Rather choose from a list?</a>
+        </ion-item>
+        <ion-item >
+            <h3> Your Current Location:</h3>
+            
+            <p>{{address.street}}, {{address.side}} side* </p>
+            
+            <div> *Geolocation is sometimes a few feet off, so please help us out by confirming which side your car is on (hint: look at the house numbers). </div>
+            <div ng-click="">Yep, I'm on the {{address.side}} side</div>
+            <div ng-click="">Nope, other side!</div>
+        </ion-item>
+    </ion-content>
+</ion-view>

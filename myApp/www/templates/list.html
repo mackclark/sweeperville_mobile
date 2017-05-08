@@ -1,0 +1,19 @@
+<ion-view view-title="List">
+    <ion-content class="padding">
+        <div>Where did you park?
+            <label class="item item-input">
+              <span class="input-label">Search</span>
+              <input type="text" ng-model="parkingSpot.concatName">
+            </label>
+            <ion-list ng-repeat="street in schedule | filter: parkingSpot">
+                <ion-item ng-click="enterParkingSpot(); compareDate(dateObject)">{{street.concatName}}, {{street.property3}}:<p> {{street.sweepDate.sweepDate}}</ion-item>
+            </ion-list>
+            <!-- <div class="row" ng-repeat="street in schedule | filter: parkingSpot">
+                <input class="columns large-2" name "chooseStreet" ng-click="enterParkingSpot(); compareDate(dateObject)" type="radio" value="{{street}}">
+                <label class="columns large-10" for "chooseStreet" >{{street.concatName}}, {{street.property3}}:<p> {{street.sweepDate.sweepDate}}</p></label>
+            </div>
+ -->
+        </div>
+
+    </ion-content>
+</ion-view>

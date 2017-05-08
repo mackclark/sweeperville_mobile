@@ -11,8 +11,9 @@
             <p>{{address.street}}, {{address.side}} side* </p>
             
             <div> *Geolocation is sometimes a few feet off, so please help us out by confirming which side your car is on (hint: look at the house numbers). </div>
-            <div ng-click="">Yep, I'm on the {{address.side}} side</div>
-            <div ng-click="">Nope, other side!</div>
+            <a ng-click="acceptSpot()">Yep, I'm on the {{address.side}} side</a>
+            <br/>
+            <a ng-click="chooseOppositeSide()">Nope, other side!</a>
         </ion-item>
     </ion-content>
 </ion-view>

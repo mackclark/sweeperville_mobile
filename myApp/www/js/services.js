@@ -13,10 +13,22 @@ angular.module('sweeperville.services', [])
         }
         
 }])
-.service('dateFunctions', [
-  "$http",
+.service('parkingSpotService', [
 
-  function($http) {
+    function() {
+
+    var currentSpot;
+
+    this.set = function(spot) {
+        currentSpot = spot;
+    }
+    this.get = function() {
+        return currentSpot;
+    }
+}])
+.service('dateService', [
+
+  function() {
 
     function GetDateObject(days, dates, months, years, hour) {
         var Dateobject = {
@@ -93,16 +105,18 @@ angular.module('sweeperville.services', [])
     } 
 
     //here same as above
-    var tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    var tmrwDay= tomorrow.getDay();
-    var tmrwDate = tomorrow.getDate();
-    var tmrwMonth = tomorrow.getMonth();
-    var tmrwYear = tomorrow.getFullYear();
-    dateObjectTomorrow = GetDateObject(tmrwDay, tmrwDate, tmrwMonth, tmrwYear);
+    // var tomorrow = new Date();
+    // tomorrow.setDate(tomorrow.getDate() + 1);
+    // var tmrwDay= tomorrow.getDay();
+    // var tmrwDate = tomorrow.getDate();
+    // var tmrwMonth = tomorrow.getMonth();
+    // var tmrwYear = tomorrow.getFullYear();
+    // dateObjectTomorrow = GetDateObject(tmrwDay, tmrwDate, tmrwMonth, tmrwYear);
     //$scope.DateTomorrow = dateObjectTomorrow;
     
     //$scope.TodaysDate = dateObjectToday.dateVerbose;
+
+
 
   }])
 .service('geolocationService', [
@@ -116,53 +130,41 @@ angular.module('sweeperville.services', [])
 
     this.initialize = function(latitude, longitude) {
         map = new google.maps.Map(document.getElementById('map-canvas'), {
-              zoom: 8,
-              center: {lat: latitude, lng: longitude}
+            zoom: 8,
+            center: {lat: latitude, lng: longitude}
         });
     }
 
       //translate coordinates into street address
-    this.codeLatLng = function(latitude, longitude) {
+    this.codeLatLng = function(latitude, longitude, callback) {
 
-          var lat = latitude;
-          var lng = longitude;
-          var latlngStr = [ lat, lng];
-          var input = lat+lng;
-          var latlng = new google.maps.LatLng(latlngStr[0], latlngStr[1]);
+        var lat = latitude;
+        var lng = longitude;
+        var latlngStr = [ lat, lng];
+        var input = lat+lng;
+        var latlng = new google.maps.LatLng(latlngStr[0], latlngStr[1]);
 
-          geocoder.geocode({'location': latlng}, function(results, status) {
-              if (status == google.maps.GeocoderStatus.OK) {
-                  if (results[1]) {
-                      map.setZoom(18);
-                      marker = new google.maps.Marker({
-                          position: latlng,
-                          map: map
-                      });
-                      infowindow.setContent(results[1].formatted_address);
-                      infowindow.open(map, marker);
+        geocoder.geocode({'location': latlng}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                if (results[1]) {
+                     //the lower the number here, the further out the map is zoomed
+                    map.setZoom(18);
+                    marker = new google.maps.Marker({
+                        position: latlng,
+                        map: map
+                    });
+                    infowindow.setContent(results[1].formatted_address);
+                    infowindow.open(map, marker);
 
-                      ///this figures out which side of the street user is on from the geolocation- i should insert code to check                       
-                      var houseNumber = Number(results[0].address_components[0].long_name);
-                      var side;
-                      if(houseNumber%2 !== 0){
-                          side = 'odd';
-                      }else{
-                          side = 'even';
-                      }
-                      address = {
-                          'city': results[0].address_components[3].long_name,
-                          'street' : results[0].address_components[1].long_name,
-                          'side': side
-                      }
-                      return address
-                  } else {
-                      window.alert('No results found');
-                      showList();
-                    }
-              }else {
-                  console.log('Geocoder failed due to: ' + status);
-                  showList();
-              }
-          });
-        }
-  }])
+                    callback(results)
+                } else {
+                    console.log('No results found');
+                    showList();
+                }
+            }else {
+                console.log('Geocoder failed due to: ' + status);
+                showList();
+            }
+        });
+    }
+}])

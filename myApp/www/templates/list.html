@@ -6,7 +6,7 @@
               <input type="text" ng-model="parkingSpot.concatName">
             </label>
             <ion-list ng-repeat="street in schedule | filter: parkingSpot">
-                <ion-item ng-click="enterParkingSpot(); compareDate(dateObject)">{{street.concatName}}, {{street.property3}}:<p> {{street.sweepDate.sweepDate}}</ion-item>
+                <ion-item ng-click="enterParkingSpot(street)">{{street.concatName}}, {{street.property3}}:<p> {{street.sweepDate.sweepDate}}</ion-item>
             </ion-list>
             <!-- <div class="row" ng-repeat="street in schedule | filter: parkingSpot">
                 <input class="columns large-2" name "chooseStreet" ng-click="enterParkingSpot(); compareDate(dateObject)" type="radio" value="{{street}}">

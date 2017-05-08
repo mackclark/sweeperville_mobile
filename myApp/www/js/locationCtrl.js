@@ -5,35 +5,35 @@ angular.module('sweeperville', ['geolocation', 'sweeperville.services'])
     '$http', 
     'geolocation',
     'getSchedule',
-    'dateFunctions',
+    'dateService',
     'geolocationService',
+    'parkingSpotService',
 
-    function ($scope, $http, geolocation, getSchedule, dateFunctions, geolocationService) {
+    function ($scope, $http, geolocation, getSchedule, dateFunctions, geolocationService, parkingSpotService) {
 
     $scope.address;
-    $scope.selectedSpot = "";
+    $scope.selectedSpot = parkingSpotService.get();
     $scope.moveToday = false;
     $scope.moveTomorrow = false;
     $scope.comparing = false;
     $scope.explanation;
     $scope.locationSweepDate; 
 
-    //***********************************************************//
-    //   GETS THE LIST OF STREETS
-    //***********************************************************//
+    //Gets the list of streets. Need this to be coming from an actual endpoint instead of a fake one once I get the db up and running
     //this is duplicated in listCtrl, but not worth fixing i think since i can get rid of the cleanup once the schedule is in the  db
     getSchedule.get().success(function(data, status, headers, config) {
         sweepSchedule = data.results.collection1;
         //this cleans up the city of somerville endpoint to make it usable- I'll have to clean it up
         //before I put it in the db for real
-        angular.forEach(sweepSchedule, function(schedule){
+        angular.forEach(sweepSchedule, function(schedule, index){
+            schedule.id = index;
             schedule.concatName = schedule.property1+" "+schedule.property2;
             schedule.sweepDate = {
                 sweepDate: schedule.property4,
                 instance1: schedule.property4.split(" and")[0],
                 instance2: schedule.property4.split(" and")[0] == "1st"?"3rd":"4th",
                 day: schedule.property4.split(" ")[3]
-                };
+            };
         });
                  
        $scope.schedule = sweepSchedule;
@@ -42,48 +42,74 @@ angular.module('sweeperville', ['geolocation', 'sweeperville.services'])
         console.log(status);
     });
 
-    //geolocate user and translate coords into address, initialize map
+    //initializes the geolocation and call services to reverse geocode the coordinates
     geolocation.getLocation().then(function(data){
         $scope.coords = {lat:data.coords.latitude, long:data.coords.longitude};
         geolocationService.initialize(data.coords.latitude, data.coords.longitude);
-        $scope.address = geolocationService.codeLatLng(data.coords.latitude, data.coords.longitude);
-        console.log($scope.address)
-    }); //get location
+        geolocationService.codeLatLng(data.coords.latitude, data.coords.longitude, formatAddress);
+        
+    });
     
-
-
-    ///////here's the geolocation stuff, it should probably be in a service
-    
-    
-
-    
-    
-    function compareGeolocation(){
-        setTimeout(function(){ 
-            angular.forEach($scope.schedule, function(street){
-              if($scope.address.street == street.concatName && $scope.address.side == street.property3){
-                $scope.locationSweepDate = street.sweepDate;
-              }
-                
-            });
-            if($scope.locationSweepDate.day == $scope.DateToday.dayVerbose && $scope.locationSweepDate.instance1 == $scope.DateToday.instance || $scope.locationSweepDate.instance2 == $scope.DateToday.instance ){
-              $scope.moveToday = true;
-              $scope.moveTomorrow = false;
-            }else if($scope.locationSweepDate.day == $scope.DateTomorrow.dayVerbose && $scope.locationSweepDate.instance1 == $scope.DateTomorrow.instance || $scope.locationSweepDate.instance2 == $scope.DateTomorrow.instance){
-              $scope.moveTomorrow =true;
-              $scope.moveToday = false;
-            }else{
-              $scope.moveTomorrow = false;
-              $scope.moveToday = false;
-            }
-           $scope.$apply($scope.locationSweepDate);
-           
-           $scope.comparing = true;
-
-        }, 2000);
+    //tidies up the reverse geocoded address to the format I want it in
+    var formatAddress = function(results,) {
+        ///this figures out which side of the street user is on from the geolocation                     
+        var houseNumber = Number(results[0].address_components[0].long_name);
+        var side;
+        if(houseNumber%2 !== 0){
+            side = 'odd';
+        }else{
+            side = 'even';
+        }
+        address = {
+            'city': results[0].address_components[3].long_name,
+            'street' : results[0].address_components[1].long_name,
+            'side': side
+        }
+        $scope.address = address
+        //need this apply because the geolocation stuff is happening outside of angular so it's not getting
+        //captured by the digest cycle otherwise
+        $scope.$apply();
+        compareGeolocation();
     }
+
     $scope.todaysDate = dateFunctions.formatDate();
 
+    //to match the geolocated address with the db of streets
+    function compareGeolocation(){
+        setTimeout(function(){ 
+            //finds the street in the list @TODO: should create an endpoint to just retrieve one street
+            //at a time so that I don't have to loop through the whole list every time
+            angular.forEach($scope.schedule, function(street){
+                if($scope.address.street == street.concatName && $scope.address.side == street.property3){
+                    $scope.selectedSpot = street;
+                    parkingSpotService.set($scope.selectedSpot);
+                    $scope.locationSweepDate = street.sweepDate;
+                }
+                
+            });
+            //checks if the date that street gets swept is today
+            if($scope.locationSweepDate.day == $scope.todaysDate.dayName && $scope.locationSweepDate.instance1 == $scope.todaysDate.instance || $scope.locationSweepDate.instance2 == $scope.todaysDate.instance ){
+              $scope.moveToday = true;
+            }
+            //@TODO to uncomment when service for checking future days is written
+            // else if($scope.locationSweepDate.day == $scope.DateTomorrow.dayNamee && $scope.locationSweepDate.instance1 == $scope.DateTomorrow.instance || $scope.locationSweepDate.instance2 == $scope.DateTomorrow.instance){
+            //   $scope.moveTomorrow =true;
+            //   $scope.moveToday = false;
+            // }else{
+            //   $scope.moveTomorrow = false;
+            //   $scope.moveToday = false;
+            // }
+           $scope.$apply($scope.locationSweepDate);
+           
+        }, 2000);
+    }
+    $scope.acceptSpot = function() {
+        parkingSpotService.set($scope.selectedSpot);
+    }
+
+    $scope.chooseOppositeSide = function() {
+        $scope.selectedSpot
+    }
 
     $scope.compareDate = function(street, date){
         if(!$scope.chooseStreet){
@@ -102,6 +128,7 @@ angular.module('sweeperville', ['geolocation', 'sweeperville.services'])
         } else{
           ///this is the select from list comparison function
           //@TODO these messages should come from an endpoint
+
             if($scope.selectedSpot.sweepDate.day == $scope.DateToday.dayVerbose && ($scope.selectedSpot.sweepDate.instance1 == $scope.DateToday.instance || $scope.selectedSpot.sweepDate.instance2 == $scope.DateToday.instance) && $scope.DateToday.hour<12){
                 $scope.moveToday = true;
                 $scope.moveTomorrow = false;
@@ -129,14 +156,17 @@ angular.module('sweeperville', ['geolocation', 'sweeperville.services'])
 .controller('ListCtrl', [
     '$scope',
     'getSchedule',
+    'parkingSpotService',
+    '$state',
 
-    function($scope, getSchedule) {
+    function($scope, getSchedule, parkingSpotService, $state) {
 
         getSchedule.get().success(function(data, status, headers, config) {
             sweepSchedule = data.results.collection1;
             //this cleans up the city of somerville endpoint to make it usable- I'll have to clean it up
             //before I put it in the db for real
-            angular.forEach(sweepSchedule, function(schedule){
+            angular.forEach(sweepSchedule, function(schedule, index){
+                schedule.id = index;
                 schedule.concatName = schedule.property1+" "+schedule.property2;
                 schedule.sweepDate = {
                     sweepDate: schedule.property4,
@@ -152,23 +182,11 @@ angular.module('sweeperville', ['geolocation', 'sweeperville.services'])
             console.log(status);
         });
 
-        $scope.enterParkingSpot = function (street){
-          $scope.selectedSpot = $('[type="radio"]:checked').val();
-              $scope.selectedSpot = jQuery.parseJSON($scope.selectedSpot);
+        $scope.enterParkingSpot = function(street) {
+            $scope.selectedSpot = street;
+            parkingSpotService.set(street)
+            $state.go('tab.parked');
         };
             
     }
 ])
-
-
-
-
-
-
-
-// need to process date to figure out what number day of the month it is
-//need to maybe process the dates in the schedule data into some more manageable format
-//compare the two to see if street will be swept
-//maybe make a map showing which streets will be swept upcoming
-
-//http://blog.challengepost.com/post/124154812036/no-api-no-problem-fake-it-with-browser?utm_source=ChallengePost+New+Competitions+Newsletter&utm_campaign=312e982097-Hacker_07_16_15&utm_medium=email&utm_term=0_294421ffd0-312e982097-225284717

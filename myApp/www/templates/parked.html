@@ -2,24 +2,24 @@
     <ion-content>
        <ion-item ng-if="selectedSpot">
             <h3> You parked at: </h3>
-            <p>{{selectedSpot.property1}} {{selectedSpot.property2}}, {{selectedSpot.property3}} side</p>
-            <p>Still parked there?</p>
+            <p class="large-text">{{selectedSpot.property1}} {{selectedSpot.property2}}, {{selectedSpot.property3}} side</p>
+            <p class="large-text">Still parked there?</p>
               <a href="#/tab/locate">Click here to record a new parking spot</a>
         </ion-item>
         
         <ion-item>
             <h3>That street is swept on: </h3>
-            <p>{{selectedSpot.property4}}</p>
+            <p class="large-text">{{selectedSpot.property4}}</p>
         </ion-item>
         <ion-item>
             <h3>Today is the:</h3> 
-            <p>{{todaysDate.dateInstance}}</p>
-            <span ng-if="comparing == true"> | 
-                <span ng-if="moveToday == true">Move your car Today!</span>
-                <span ng-if="moveTomorrow == true">Move your car Tomorrow!</span>
-                <span ng-if="moveToday == false && moveTomorrow == false">You're good to go!</span>
-                <p>{{explanation}}</p>
-            </span>
+            <p class="large-text">{{todaysDate.dateInstance}}</p>
+            
+            <p class="large-text" ng-if="moveToday == true">Move your car Today!</p>
+            <p class="large-text" ng-if="moveTomorrow == true">Move your car Tomorrow!</p>
+            <p class="large-text" ng-if="moveToday == false && moveTomorrow == false">You're good to go!</p>
+            <p class="large-text">{{explanation}}</p>
+
         </ion-item>
 
     </ion-content>

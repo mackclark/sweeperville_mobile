@@ -14,14 +14,17 @@ angular.module('sweeperville.services', [])
         
 }])
 .service('parkingSpotService', [
+    'localStorageObjects',
 
-    function() {
+    function(localStorageObjects) {
 
-    var currentSpot;
+    var currentSpot = localStorageObjects.getByKey('parkingSpot') ? localStorageObjects.getByKey('parkingSpot') : null;
 
     this.set = function(spot) {
         currentSpot = spot;
+        localStorageObjects.setByKey('parkingSpot', spot)
     }
+
     this.get = function() {
         return currentSpot;
     }
@@ -30,6 +33,7 @@ angular.module('sweeperville.services', [])
 
   function() {
 
+    //though it has been heavily refactored, credit to Dan Budris for writing the original date formatting code this is based on: https://github.com/danbudris
     function GetDateObject(days, dates, months, years, hour) {
         var Dateobject = {
             month: 0,
@@ -53,7 +57,7 @@ angular.module('sweeperville.services', [])
             "Friday",
             "Saturday"
         ]
-       
+       //@TODO ditto this
         var monthNames = [
             "January",
             "February",
@@ -69,6 +73,7 @@ angular.module('sweeperville.services', [])
             "December"
          ]
 
+        //turns the date into it's instance of day (1st wed, 4th tue, etc)
         var newdate = (weekday[days]+", "+monthNames[months]+" "+dates+", "+years);
         var ordinalsVerbose = ["","1st","2nd","3rd","4th","5th"];
         var tokens = newdate.split(/[ ,]/);
@@ -88,10 +93,8 @@ angular.module('sweeperville.services', [])
         Dateobject.dateInstance = instance;
 
         return Dateobject;
+    };
 
-    }; //End get date object
-
-    //is there a way to get all this one date object without having to do all this getDay() shit?
    
     this.formatDate = function() {
         var today = new Date();
@@ -102,17 +105,20 @@ angular.module('sweeperville.services', [])
         var tdyTime = today.getHours(); 
         dateObjectToday = GetDateObject(tdyDay,tdyDate,tdyMonth, tdyYear, tdyTime);
         return dateObjectToday;
-    } 
+    };
 
     //here same as above
-    // var tomorrow = new Date();
-    // tomorrow.setDate(tomorrow.getDate() + 1);
-    // var tmrwDay= tomorrow.getDay();
-    // var tmrwDate = tomorrow.getDate();
-    // var tmrwMonth = tomorrow.getMonth();
-    // var tmrwYear = tomorrow.getFullYear();
-    // dateObjectTomorrow = GetDateObject(tmrwDay, tmrwDate, tmrwMonth, tmrwYear);
-    //$scope.DateTomorrow = dateObjectTomorrow;
+    this.formatFutureDate = function(days) {
+        var futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + days);
+        var futureDateDay= futureDate.getDay();
+        var futureDateDate = futureDate.getDate();
+        var futureDateMonth = futureDate.getMonth();
+        var futureDateYear = futureDate.getFullYear();
+        dateObjectFutureDate = GetDateObject(futureDateDay, futureDateDate, futureDateMonth, futureDateYear);
+        return dateObjectFutureDate;
+    };
+    
     
     //$scope.TodaysDate = dateObjectToday.dateVerbose;
 
@@ -168,3 +174,41 @@ angular.module('sweeperville.services', [])
         });
     }
 }])
+.factory("localStorageObjects", [
+    "$window", 
+
+    function($window) {
+    return {
+        getByKey: getByKey,
+        setByKey: setByKey,
+        removeByKey: removeByKey,
+        clearDB: clearDB,
+    };
+
+    //check if the val is in storage before we try to access it
+    function checkValExists(val, valName) {
+        if(!val) throw Error(valName + " must be specified");
+    }
+
+    //get val from storage 
+    function getByKey(key) {
+        checkValExists(key, "Key");
+        var resultVal = JSON.parse($window.localStorage.getItem(key));
+        return resultVal !== null ? resultVal : {};
+    }
+    //set val in storage
+    function setByKey(key, data) {
+        checkValExists(key, "Key");
+        $window.localStorage.setItem(key, (typeof data === "object" ? JSON.stringify(data) : data));
+    }
+    //remove val from storage
+    function removeByKey(key) {
+        checkValExists(key, "Key");
+        $window.localStorage.removeItem(key);
+    }
+    //clear storage- not used right now, but in case I ever implement a db I'd need to invoke this on logout
+    function clearDB() {
+        $window.localStorage.clear();
+    }
+
+}]);

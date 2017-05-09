@@ -1,1 +1,47 @@
-/* Empty. Add your own CSS if you like */
+.locate--loading-spinner {
+	width: 300px;
+    display: block;
+    margin: auto;
+}
+
+#map-canvas {
+	background: transparent url(https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif) no-repeat center center;
+}
+
+/*some utility classes
+*/
+.b {
+	font-weight: bold;
+}
+
+.u {
+	text-decoration: underline;
+}
+
+.i {
+	text-decoration: italic;
+}
+
+.text-deco-none {
+	text-decoration: none;
+}
+
+.wrap-text {
+	/*the important here to override ionic's default style*/
+	text-overflow: wrap!important;
+}
+
+.large-text {
+	/*the important here to override ionic's default style*/
+	font-size: 16px!important;
+}
+
+.mb10 {
+	/*the important here to override ionic's default style*/
+	margin-bottom: 10px!important;
+}
+
+.padding {
+	padding: 10px;
+}
+

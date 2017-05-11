@@ -1,4 +1,5 @@
-angular.module('sweeperville.services', [])
+angular.module('sweeperville.services', ['geolocation'])
+
 .service('getSchedule', [
     "$http",
 
@@ -18,8 +19,8 @@ angular.module('sweeperville.services', [])
 
     function(localStorageObjects) {
 
-    var currentSpot = localStorageObjects.getByKey('parkingSpot') ? localStorageObjects.getByKey('parkingSpot') : null;
-
+    //this service is a getter and setter to communicate the selected spot between the two controllers so that it can be set in one and fetched in the other
+    var currentSpot = localStorageObjects.getByKey('parkingSpot').property1 ? localStorageObjects.getByKey('parkingSpot') : null;
     this.set = function(spot) {
         currentSpot = spot;
         localStorageObjects.setByKey('parkingSpot', spot)

@@ -4,8 +4,12 @@
     margin: auto;
 }
 
+.box {
+	border-bottom: 1px solid #444;
+}
+
 #map-canvas {
-	background: transparent url(https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif) no-repeat center center;
+	background: transparent url(../img/Loading_icon.gif) no-repeat center center;
 }
 
 /*some utility classes
@@ -27,8 +31,8 @@
 }
 
 .wrap-text {
-	/*the important here to override ionic's default style*/
-	text-overflow: wrap!important;
+	text-overflow: wrap;
+	white-space: normal;
 }
 
 .large-text {
@@ -44,4 +48,6 @@
 .padding {
 	padding: 10px;
 }
-
+.white {
+	color: #fff;
+}

@@ -1,26 +1,28 @@
 <ion-view view-title="parked">
     <ion-content>
-       <ion-item ng-if="selectedSpot">
+       <div class="padding box" ng-show="selectedSpot">
             <h3> You parked at: </h3>
             <p class="large-text">{{selectedSpot.property1}} {{selectedSpot.property2}}, {{selectedSpot.property3}} side</p>
             <p class="large-text">Still parked there?</p>
-              <a href="#/tab/locate">Click here to record a new parking spot</a>
-        </ion-item>
-        
-        <ion-item>
-            <h3>That street is swept on: </h3>
-            <p class="large-text">{{selectedSpot.property4}}</p>
-        </ion-item>
-        <ion-item>
+              <a href="#/tab/locate" class="text-deco-none"><button ion-button class="large-text button row mb10 button-calm">Click here to record a new parking spot</button></a>
+        </div>
+        <div class="padding box" ng-show="!selectedSpot">
+            <h3>You haven't saved a parking spot yet.</h3>
+            <a href="#/tab/locate"><button ion-button class="large-text button row mb10 button-calm">Click here to record your spot </button></a>
+        </div>
+        <div class="padding box" ng-show="selectedSpot">
+            <h3>That side of that street is swept on: </h3>
+            <p class="large-text">{{selectedSpot.property4}} between 8AM and 12PM</p>
+        </div>
+        <div class="padding box">
             <h3>Today is the:</h3> 
             <p class="large-text">{{todaysDate.dateInstance}}</p>
             
-            <p class="large-text" ng-if="moveToday == true">Move your car Today!</p>
-            <p class="large-text" ng-if="moveTomorrow == true">Move your car Tomorrow!</p>
-            <p class="large-text" ng-if="moveToday == false && moveTomorrow == false">You're good to go!</p>
-            <p class="large-text">{{explanation}}</p>
+            <p class="large-text assertive" ng-if="moveToday == true">Move your car before 8AM Today!</p>
+            <p class="large-text energized" ng-if="moveTomorrow == true">Move your car before 8AM Tomorrow!</p>
+            <p class="large-text balanced" ng-if="moveToday == false && moveTomorrow == false">You're good to go!</p>
 
-        </ion-item>
+        </div>
 
     </ion-content>
 </ion-view>

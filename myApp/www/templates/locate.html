@@ -1,28 +1,25 @@
-**************LOCATE
 <ion-view title="Your Parking Spot">
     <ion-content>
         <ion-item>
             <div id="map-canvas" style="height: 300px"></div>
-
-            <!-- <img class="locate--loading-spinner" ng-if="!address" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"/> -->
              <a class="mb10" href="#/list">Rather choose from a list?</a>
         </ion-item>
-        <ion-item >
+        <div class="padding box">
             <h3> Your Current Location:</h3>
             
             <p class="large-text" ng-if="address">{{address.street}}, {{address.side}} side* </p>
             <p class="large-text" ng-if="!address"> Hang tight while we find your location!</p>
             
-        </ion-item>
-        <ion-item ng-if="address">
-            <h3 class="mb10 wrap-text"> *Geolocation isn't always completely accurate, so please help us out by confirming which side your car is on (hint: look at the house numbers). </h3>
-            <button ion-button color="secondary" class="button row mb10 padding" ng-click="acceptSpot()">
-                <p class="large-text">Yep, I'm on the <span class="b"> {{address.side}} </span>side of  {{address.street}}</p>
+        </div>
+        <div class="padding box" ng-if="address">
+            <h3 class="mb10 wrap-text large-text"> *Geolocation isn't always completely accurate, so please help us out by confirming which side your car is on (hint: look at the house numbers). </h3>
+            <button ion-button class="button row mb10 button-positive" ng-click="acceptSpot()">
+                <p class="large-text white">Yep, I'm on the <span class="b"> {{address.side}} </span>side of  {{address.street}}</p>
             </button>
 
-            <a class="text-deco-none" href="#/list">
-                <button ion-button class="large-text button row mb10 padding"><p class="large-text"> Nope, let me pick the correct street from a list</p></button>
+            <a class="text-deco-none" href="#/tab/list">
+                <button ion-button class="large-text button row mb10 button-calm"><p class="large-text white"> Nope, let me pick the correct street from a list</p></button>
             </a>
-            </ion-item>
+        </div>
     </ion-content>
 </ion-view>

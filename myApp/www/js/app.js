@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'sweeperville.services', 'sweeperville'])
+angular.module('sweepervilleApp', ['ionic', 'sweeperville.services', 'sweeperville'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -23,7 +23,9 @@ angular.module('starter', ['ionic', 'sweeperville.services', 'sweeperville'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+
+  $ionicConfigProvider.views.maxCache(0);
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -37,29 +39,10 @@ angular.module('starter', ['ionic', 'sweeperville.services', 'sweeperville'])
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
-  .state('tab.login', {
-      url: '/login',
-      views: {
-        'tab-account': {
-          templateUrl: '/components/access/login.component.html',
-          controller: 'LoginCtrl'
-        }
-      }
-      
-    })
-  .state('tab.dash', {
-    url: '/dash',
-    views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
-      }
-    }
-  })
   .state('tab.locate', {
     url: '/locate',
     views: {
-      'tab-account': {
+      'locate': {
         templateUrl: 'templates/locate.html',
         controller: 'locationCtrl'
       }
@@ -68,7 +51,7 @@ angular.module('starter', ['ionic', 'sweeperville.services', 'sweeperville'])
    .state('tab.parked', {
     url: '/parked',
     views: {
-      'tab-account': {
+      'parked': {
         templateUrl: 'templates/parked.html',
         controller: 'locationCtrl'
       }
@@ -79,17 +62,20 @@ angular.module('starter', ['ionic', 'sweeperville.services', 'sweeperville'])
     views: {
       'tab-account': {
         templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
       }
     }
   })
-   .state('list', {
+   .state('tab.list', {
     url: '/list',
-    templateUrl: 'templates/list.html',
-    controller: 'ListCtrl'
+    views: {
+      'tab-list': {
+        templateUrl: 'templates/list.html',
+        controller: 'ListCtrl'
+      }
+    }
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/tab/parked');
 
 });

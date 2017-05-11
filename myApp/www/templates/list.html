@@ -1,18 +1,16 @@
 <ion-view view-title="List">
     <ion-content class="padding">
-        <div>Where did you park?
+        <div>
+            <p class="large-text">Where did you park?</p>
             <label class="item item-input">
               <span class="input-label">Search</span>
               <input type="text" ng-model="parkingSpot.concatName">
             </label>
-            <ion-list ng-repeat="street in schedule | filter: parkingSpot">
-                <ion-item ng-click="enterParkingSpot(street)">{{street.concatName}}, {{street.property3}}:<p> {{street.sweepDate.sweepDate}}</ion-item>
+            <h3 ng-if="!schedule">Loading</h3>
+            <ion-list ng-if="schedule" >
+                <ion-item ng-repeat="street in schedule | filter: parkingSpot track by street.index" ng-click="enterParkingSpot(street)"><span ng-bind="street.concatName"></span>, <span ng-bind="street.property3"></span>: <p ng-bind="street.sweepDate.sweepDate"></p></ion-item>
             </ion-list>
-            <!-- <div class="row" ng-repeat="street in schedule | filter: parkingSpot">
-                <input class="columns large-2" name "chooseStreet" ng-click="enterParkingSpot(); compareDate(dateObject)" type="radio" value="{{street}}">
-                <label class="columns large-10" for "chooseStreet" >{{street.concatName}}, {{street.property3}}:<p> {{street.sweepDate.sweepDate}}</p></label>
-            </div>
- -->
+
         </div>
 
     </ion-content>

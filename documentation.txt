@@ -1,0 +1,46 @@
+Sweeperville
+I like the think that we’ve all been there -- you leave the house feeling like you’ve forgotten something, but you just can’t place it.  By the time you get back to your car, you see  the little orange ticket on your windshield and remember that you forgot to move the car for streetsweeping. I have gotten hundreds of dollars of tickets over the years because I can never seem to remember the exact sweeping schedule for all of the different streets I park on, so I created a mobile app to help me remember where I parked, and  if I need to move my car in order to avoid a ticket.
+
+In Somerville, as in many areas, the streets are swept periodically based on a schedule that can be hard to remember. This app utilizes a user's current location and compares it to a list of all streets in Somerville and which days they are swept. The app tells the user if they should plan to move their car, or if they can stay parked where they are. The app also saves the user's parking spot for future reference, and allows them to filter and browse the list of all streets and their sweep dates. 
+
+Installation
+Instructions for Installing Sweeperville:
+Unfortunately the app is currently only available for android devices because of the cost of registering an iOS app. In order to install the app, 
+1. Use a QR code scanning app to scan the qr code. I recommend "QR Code Reader," but there are a number of free ones out there and they all do essentially the same thing. The code is saved as an image file in the root of the project, with the filename qr.png.  
+2.You will be prompted to open a link; do so. Once there, you will be prompted to download a file; download the file and open it.  The file should have a name simlar to “Sweeperville-debug.apk”
+3.You will then be asked to install it; select yes. 
+NOTE: Some Android devices may not allow you to open the file directly, and you will have to do so through a file manager. This is a newer security feature, so it will probably only happen if you are running the newest Android version.  There are many  free file manager apps, one good one is "ES File Explorer." Open the file manager, and open the most recently downloaded file, and you will be prompted to install the sweeperville app. If you have trouble installing the app, go to the phone settings and under the security settings, enable "Allow installation of apps from sources other than the Play store." Once you do that, you should be able to install and open the app!  Please note that if you are not currently physically located in Somerville, the app is going to work a bit differently- please scroll down to the last section for more info.
+
+If you encounter any problems with installing the app from a qr code, this article has some helpful tips:
+https://www.howtogeek.com/howto/24921/how-to-install-android-apps-and-share-contacts-using-qr-codes/
+
+Alternatively, if you do not have an Android device, it is possible to simulate running the app in the browser, but it is a bit trickier. In order to do this, you need to use git to clone the repo:
+$ git clone https://github.com/mackclark/sweeperville_mobile.git
+
+once you have cloned the sweeperville repo to your local machine, navigate into the  sweeperville repository. You will need to install a few things to run the app. First install Cordova and Ionic. Use the instructions here to do that (don't follow the instructions under the Create the Project header, you only need to go up through installing Cordova and Ionic):
+http://ionicframework.com/docs/v1/guide/installation.html
+
+Once you have installed Cordova and Ionic, you need to install and run Gulp in order to compile the code. If you have Node installed, you should be able to install Gulp by running:
+
+$ npm install
+
+Once you have installed Gulp, navigate to the myApp directory and run
+
+$ gulp
+
+Finally, once gulp has run successfully, you are ready to start the app. From the myApp directory, run the command:
+
+$ ionic serve
+
+This should open the app in a browser window. If not, it should also output where it is being served so that you can navigate there- ie http://localhost:8100. I recommend using chrome for this. Open the developer tools, and click on the little phone icon in the upper left hand corner. This allows you to simulate different mobile devices.  That's it! 
+ 
+
+
+Instructions for using Sweeperville
+Sweeperville has 3 main views, which you can navigate using the tabs at the top. Under the "New Parking Spot" view, your physical location will be displayed to you on a small map. Once the location is loaded, it will be displayed to you in the form of the street name, and which side of the street you are on (odd vs. even). You will be asked to confirm that this location is accurate. If yes, you will be taken to the "Saved Parking Spot" view. This view displays the street name and which side of it you have saved as your parking spot, ie Cross Street, odd side. It also shows what dates that street is swept on, ie the first and third Monday of each month, and what day it is today, ie the second Wednesday. The app then tells you whether or not you should move your car based on that info. Under the third view, "View Full Schedule," you can peruse the full list of streets in Somerville, and select one as your parking spot (as an alternative to selecting it through geolocation). You can scroll through the list, or type into the search box at the top of the page to filter the list. You can select a street from the list, and it will be saved as your parking spot. 
+
+Your parking spot will be saved across sessions, so if you save a spot, when you close and reopen the app it will still be saved. 
+
+Important Note:
+I would love to eventually expand the scope of the app to other neighborhoods in Boston, however for the time being it is limited only to the city of Somerville. This means that the app will only be partially functional if you are not physically located in Somerville while you are using it. If you are elsewhere, you will receive an alert that the app is intended only for Somerville. You can still browse the list of streets and select one to save as your parking spot, and the map will show your location, but the app will not be able to use geolocation to find which street you parked on in the schedule since the schedule only includes Somerville. 
+
